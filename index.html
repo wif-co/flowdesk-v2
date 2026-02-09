@@ -3,213 +3,605 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FlowDesk v2</title>
+  <title>FlowDesk</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --color-background: #0F0F1A;
-      --color-surface: #1A1A2E;
-      --color-surface-alt: #252542;
-      --color-border: #2A2A45;
-      --color-text: #E8E8F0;
-      --color-text-muted: #8888A0;
-      --color-primary: #4ECDC4;
-      --color-accent: #9D4EDD;
-      --color-success: #4ECDC4;
-      --color-warning: #FFD93D;
-      --color-error: #FF6B9D;
-      --color-info: #7B68EE;
-      --font-main: 'Source Sans 3', 'Segoe UI', sans-serif;
-      --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px; --space-8: 32px;
+      --bg-deep: #08080C;
+      --bg-base: #0C0C12;
+      --bg-elevated: #13131A;
+      --bg-float: #1A1A24;
+      --border-subtle: rgba(255,255,255,0.06);
+      --border-default: rgba(255,255,255,0.1);
+      --text-primary: #F0F0F5;
+      --text-secondary: #9090A0;
+      --text-tertiary: #606070;
+      --accent-cyan: #00D4AA;
+      --accent-violet: #8B5CF6;
+      --accent-amber: #F59E0B;
+      --accent-rose: #F43F5E;
+      --accent-blue: #3B82F6;
+      --glow-cyan: rgba(0,212,170,0.4);
+      --glow-violet: rgba(139,92,246,0.4);
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
     }
     [data-theme="light"] {
-      --color-background: #F5F5F0;
-      --color-surface: #FFFFFF;
-      --color-surface-alt: #EEEEE8;
-      --color-border: #D0D0C8;
-      --color-text: #2D2D2D;
-      --color-text-muted: #6B6B6B;
-      --color-primary: #1E8A82;
-      --color-accent: #7B3FA0;
-      --color-success: #1E8A82;
-      --color-warning: #C9A227;
-      --color-error: #B54A4A;
-      --color-info: #5B4BC4;
+      --bg-deep: #F8F8FA;
+      --bg-base: #FFFFFF;
+      --bg-elevated: #FFFFFF;
+      --bg-float: #F0F0F5;
+      --border-subtle: rgba(0,0,0,0.04);
+      --border-default: rgba(0,0,0,0.08);
+      --text-primary: #18181B;
+      --text-secondary: #52525B;
+      --text-tertiary: #A1A1AA;
+      --accent-cyan: #059669;
+      --accent-violet: #7C3AED;
+      --accent-amber: #D97706;
+      --accent-rose: #DC2626;
+      --accent-blue: #2563EB;
+      --glow-cyan: rgba(5,150,105,0.15);
+      --glow-violet: rgba(124,58,237,0.15);
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: var(--font-main); background: var(--color-background); color: var(--color-text); line-height: 1.6; min-height: 100vh; }
-    /* Password Gate */
-    .auth-overlay { position: fixed; inset: 0; background: var(--color-background); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 16px; }
+    body { 
+      font-family: var(--font-body); 
+      background: var(--bg-deep); 
+      color: var(--text-primary); 
+      line-height: 1.5; 
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Ambient Background */
+    .ambient-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+    }
+    .ambient-bg::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(0,212,170,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(139,92,246,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.04) 0%, transparent 60%);
+      animation: ambientShift 30s ease-in-out infinite;
+    }
+    @keyframes ambientShift {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(2%, 1%) rotate(1deg); }
+      66% { transform: translate(-1%, 2%) rotate(-1deg); }
+    }
+    
+    /* Auth Overlay */
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeIn 0.4s ease;
+    }
     .auth-overlay.hidden { display: none; }
-    .auth-box { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 16px; padding: var(--space-8); max-width: 360px; width: 90%; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-    .auth-box h2 { color: var(--color-primary); margin-bottom: var(--space-2); font-size: 1.5rem; }
-    .auth-box p { color: var(--color-text-muted); margin-bottom: var(--space-6); font-size: 0.875rem; }
-    .auth-box input { width: 100%; padding: var(--space-3) var(--space-4); border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-surface-alt); color: var(--color-text); font-size: 1rem; margin-bottom: var(--space-4); }
-    .auth-box input:focus { outline: none; border-color: var(--color-primary); }
-    .auth-box button { width: 100%; padding: var(--space-3) var(--space-4); border: none; border-radius: 8px; background: var(--color-primary); color: var(--color-background); font-size: 1rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
-    .auth-box button:hover { opacity: 0.9; }
-    .auth-error { color: var(--color-error); font-size: 0.875rem; margin-top: var(--space-2); display: none; }
-    .auth-error.visible { display: block; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    
+    .auth-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-xl);
+      padding: 48px 40px;
+      max-width: 380px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 
+        0 0 0 1px var(--border-subtle),
+        0 24px 48px -12px rgba(0,0,0,0.4),
+        0 0 120px -40px var(--glow-cyan);
+      animation: cardReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes cardReveal {
+      from { opacity: 0; transform: translateY(20px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    .auth-logo {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .auth-subtitle {
+      color: var(--text-tertiary);
+      font-size: 0.875rem;
+      margin-bottom: 32px;
+    }
+    .auth-input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-md);
+      background: var(--bg-float);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      margin-bottom: 16px;
+      transition: all 0.2s ease;
+    }
+    .auth-input:focus {
+      outline: none;
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px var(--glow-cyan);
+    }
+    .auth-input::placeholder { color: var(--text-tertiary); }
+    .auth-btn {
+      width: 100%;
+      padding: 14px 24px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--accent-cyan), #00B894);
+      color: var(--bg-deep);
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .auth-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px -8px var(--glow-cyan); }
+    .auth-btn:active { transform: translateY(0); }
+    .auth-error { color: var(--accent-rose); font-size: 0.85rem; margin-top: 12px; display: none; }
+    .auth-error.visible { display: block; animation: shake 0.4s ease; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+    
+    /* App Content */
     .app-content { display: none; }
-    .app-content.visible { display: block; }
-    .container { max-width: 1200px; margin: 0 auto; padding: var(--space-6); }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-6); padding-bottom: var(--space-4); border-bottom: 1px solid var(--color-border); }
-    .header-left { display: flex; align-items: center; gap: var(--space-4); }
-    .header h1 { font-size: 1.75rem; font-weight: 700; color: var(--color-primary); }
-    .header .meta { font-size: 0.875rem; color: var(--color-text-muted); }
-    .header .meta .generated-by { color: var(--color-accent); font-weight: 600; }
-    .trust-badge { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-4); border-radius: 20px; font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .theme-switch { display: flex; align-items: center; background: var(--color-surface-alt); border-radius: 30px; padding: 4px; cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: manipulation; border: 1px solid var(--color-border); }
-    .theme-switch-option { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 24px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.3s ease; color: var(--color-text-muted); }
-    .theme-switch-option.active { background: var(--color-surface); color: var(--color-text); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-    .theme-switch-icon { font-size: 0.9rem; }
-    .trust-badge.stable { background: rgba(78, 205, 196, 0.15); color: var(--color-success); border: 1px solid rgba(78, 205, 196, 0.3); }
-    .trust-badge.caution { background: rgba(255, 217, 61, 0.15); color: var(--color-warning); border: 1px solid rgba(255, 217, 61, 0.3); }
-    .trust-badge.at-risk { background: rgba(255, 107, 157, 0.15); color: var(--color-error); border: 1px solid rgba(255, 107, 157, 0.3); }
-    .trust-triggers { font-size: 0.75rem; color: var(--color-text-muted); margin-top: var(--space-1); }
-    .grid { display: grid; gap: var(--space-6); grid-template-columns: 1fr; }
+    .app-content.visible { display: block; animation: contentReveal 0.6s ease; }
+    @keyframes contentReveal { from { opacity: 0; } to { opacity: 1; } }
+    
+    /* Layout */
+    .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+    
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .header-left { display: flex; align-items: center; gap: 20px; }
+    .logo {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+    
+    /* Trust Badge */
+    .trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .trust-badge.stable { 
+      background: rgba(0,212,170,0.1); 
+      color: var(--accent-cyan);
+      box-shadow: 0 0 20px -5px var(--glow-cyan);
+    }
+    .trust-badge.caution { background: rgba(245,158,11,0.1); color: var(--accent-amber); }
+    .trust-badge.at-risk { background: rgba(244,63,94,0.1); color: var(--accent-rose); }
+    .trust-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    
+    /* Theme Toggle */
+    .theme-toggle {
+      display: flex;
+      background: var(--bg-float);
+      border: 1px solid var(--border-subtle);
+      border-radius: 100px;
+      padding: 4px;
+      cursor: pointer;
+    }
+    .theme-option {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 100px;
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      transition: all 0.25s ease;
+    }
+    .theme-option.active {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    
+    .header-meta {
+      font-size: 0.85rem;
+      color: var(--text-tertiary);
+    }
+    .header-meta .highlight { color: var(--accent-violet); font-weight: 500; }
+    
+    /* Grid */
+    .grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1fr;
+    }
     @media (min-width: 768px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (min-width: 1400px) { .grid { grid-template-columns: repeat(4, 1fr); } }
-    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); padding: var(--space-6); }
-    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); padding-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); }
-    .panel-header h2 { font-size: 1.125rem; font-weight: 600; color: var(--color-text); }
-    .panel-header .icon { font-size: 1.25rem; }
-    .panel-header .count-badge { background: var(--color-accent); color: white; font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; margin-left: var(--space-2); }
-    .status-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: var(--space-2); }
-    .status-dot.ok { background: var(--color-success); box-shadow: 0 0 8px var(--color-success); }
-    .status-dot.degraded { background: var(--color-warning); box-shadow: 0 0 8px var(--color-warning); }
-    .status-dot.down { background: var(--color-error); box-shadow: 0 0 8px var(--color-error); }
-    .status-badge { display: inline-flex; align-items: center; padding: var(--space-1) var(--space-3); border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .status-badge.online { background: rgba(78, 205, 196, 0.15); color: var(--color-success); }
-    .status-badge.offline { background: rgba(255, 107, 157, 0.15); color: var(--color-error); }
-    .status-badge.active { background: rgba(157, 78, 221, 0.15); color: var(--color-accent); }
-    .status-badge.idle { background: rgba(123, 104, 238, 0.15); color: var(--color-info); }
-    .status-badge.stale { background: rgba(255, 107, 157, 0.15); color: var(--color-error); }
-    .status-badge.writable { background: rgba(78, 205, 196, 0.15); color: var(--color-success); }
-    .status-badge.read-only { background: rgba(255, 217, 61, 0.15); color: var(--color-warning); }
-    .row { display: flex; justify-content: space-between; align-items: center; padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border); }
-    .row:last-child { border-bottom: none; }
-    .row-label { font-size: 0.875rem; color: var(--color-text-muted); }
-    .row-value { font-weight: 600; display: flex; align-items: center; color: var(--color-text); }
-    .countdown { font-size: 0.75rem; color: var(--color-text-muted); margin-left: var(--space-2); padding: 2px 6px; background: var(--color-surface-alt); border-radius: 4px; }
-    .countdown.warning { color: var(--color-warning); background: rgba(255, 217, 61, 0.1); }
-    .countdown.urgent { color: var(--color-error); background: rgba(255, 107, 157, 0.1); }
-    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); margin-top: var(--space-3); }
-    .service-item { display: flex; align-items: center; font-size: 0.875rem; color: var(--color-text-muted); }
+    @media (min-width: 1200px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+    
+    /* Panels */
+    .panel {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      animation: panelReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    }
+    .panel:nth-child(1) { animation-delay: 0.1s; }
+    .panel:nth-child(2) { animation-delay: 0.2s; }
+    .panel:nth-child(3) { animation-delay: 0.3s; }
+    .panel:nth-child(4) { animation-delay: 0.4s; }
+    @keyframes panelReveal {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .panel:hover {
+      border-color: var(--border-default);
+      box-shadow: 0 8px 32px -8px rgba(0,0,0,0.3);
+    }
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .panel:hover::before { opacity: 0.5; }
+    
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .panel-title {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+    }
+    .panel-icon { font-size: 1.25rem; opacity: 0.7; }
+    .count-badge {
+      background: var(--accent-violet);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+      margin-left: 8px;
+    }
+    
+    /* Status Elements */
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .status-row:last-child { border-bottom: none; }
+    .status-label { font-size: 0.875rem; color: var(--text-secondary); }
+    .status-value { font-weight: 500; display: flex; align-items: center; gap: 8px; }
+    
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .status-pill.online { background: rgba(0,212,170,0.12); color: var(--accent-cyan); }
+    .status-pill.offline { background: rgba(244,63,94,0.12); color: var(--accent-rose); }
+    .status-pill.active { background: rgba(139,92,246,0.12); color: var(--accent-violet); }
+    .status-pill.idle { background: rgba(59,130,246,0.12); color: var(--accent-blue); }
+    .status-pill.stale { background: rgba(244,63,94,0.12); color: var(--accent-rose); }
+    .status-pill.writable { background: rgba(0,212,170,0.12); color: var(--accent-cyan); }
+    .status-pill.read-only { background: rgba(245,158,11,0.12); color: var(--accent-amber); }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .status-dot.ok { background: var(--accent-cyan); box-shadow: 0 0 8px var(--glow-cyan); }
+    .status-dot.degraded { background: var(--accent-amber); }
+    .status-dot.down { background: var(--accent-rose); }
+    
+    /* Services Grid */
+    .services-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .service-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
     .service-name { text-transform: capitalize; }
-    .pending-queue { margin-top: var(--space-3); }
-    .pending-queue-toggle { background: none; border: none; color: var(--color-accent); font-size: 0.8rem; cursor: pointer; padding: var(--space-1) 0; display: flex; align-items: center; gap: var(--space-1); }
-    .pending-queue-toggle:hover { text-decoration: underline; }
-    .pending-queue-list { margin-top: var(--space-2); padding: var(--space-3); background: var(--color-surface-alt); border-radius: 8px; display: none; }
-    .pending-queue-list.expanded { display: block; }
-    .pending-item { display: flex; justify-content: space-between; align-items: center; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); font-size: 0.8rem; }
+    
+    /* Server Health */
+    .server-section { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-subtle); }
+    .section-label {
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin-bottom: 12px;
+    }
+    .metric-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .metric-bar { flex: 1; height: 6px; background: var(--bg-float); border-radius: 100px; overflow: hidden; }
+    .metric-fill { height: 100%; border-radius: 100px; transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+    .metric-fill.green { background: linear-gradient(90deg, var(--accent-cyan), #00B894); }
+    .metric-fill.amber { background: linear-gradient(90deg, var(--accent-amber), #F97316); }
+    .metric-fill.red { background: linear-gradient(90deg, var(--accent-rose), #E11D48); }
+    .metric-info { min-width: 140px; display: flex; justify-content: space-between; font-size: 0.8rem; }
+    .metric-name { font-weight: 500; color: var(--text-primary); }
+    .metric-detail { color: var(--text-tertiary); }
+    
+    /* Summary */
+    .summary-good { color: var(--accent-cyan); font-weight: 500; font-size: 0.875rem; margin-top: 16px; display: flex; align-items: center; gap: 6px; }
+    
+    /* Work Item */
+    .work-card {
+      background: var(--bg-float);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .work-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .work-name { font-weight: 600; color: var(--text-primary); }
+    .work-blocker {
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: rgba(244,63,94,0.08);
+      border-left: 3px solid var(--accent-rose);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.85rem;
+      color: var(--accent-rose);
+    }
+    .work-countdown {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .countdown-tag { padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+    .countdown-tag.warning { background: rgba(245,158,11,0.12); color: var(--accent-amber); }
+    .countdown-tag.urgent { background: rgba(244,63,94,0.12); color: var(--accent-rose); }
+    
+    /* Completions */
+    .completion-list { list-style: none; }
+    .completion-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 0.875rem;
+    }
+    .completion-item:last-child { border-bottom: none; }
+    .completion-task { color: var(--text-primary); }
+    .completion-date { color: var(--text-tertiary); font-size: 0.8rem; }
+    
+    /* Metrics Grid */
+    .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .metric-card {
+      text-align: center;
+      padding: 20px 12px;
+      background: var(--bg-float);
+      border-radius: var(--radius-md);
+    }
+    .metric-value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      letter-spacing: -0.02em;
+    }
+    .metric-value.warning { color: var(--accent-amber); }
+    .metric-value.good { color: var(--accent-cyan); }
+    .metric-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+    .metric-countdown-small { font-size: 0.7rem; color: var(--text-tertiary); margin-top: 4px; }
+    .metric-countdown-small.warning { color: var(--accent-amber); }
+    .metric-countdown-small.urgent { color: var(--accent-rose); }
+    
+    /* Approvals */
+    .approval-card {
+      background: var(--bg-float);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+    .approval-card:last-child { margin-bottom: 0; }
+    .approval-headline {
+      border-left: 3px solid var(--accent-amber);
+      padding-left: 12px;
+      margin-bottom: 12px;
+    }
+    .approval-headline-text { font-weight: 600; color: var(--accent-amber); font-size: 0.9rem; }
+    .approval-desc { font-weight: 500; color: var(--text-primary); margin-bottom: 6px; }
+    .approval-meta { display: flex; justify-content: space-between; font-size: 0.8rem; }
+    .approval-reason { color: var(--accent-blue); }
+    .approval-age { color: var(--accent-amber); }
+    .approval-source { font-size: 0.75rem; color: var(--text-tertiary); margin-top: 6px; }
+    
+    /* Governance */
+    .governance-row { display: flex; align-items: center; gap: 8px; font-size: 0.875rem; }
+    .governance-row.aligned { color: var(--accent-cyan); }
+    .governance-row.mismatch { color: var(--accent-amber); }
+    
+    /* Empty States */
+    .empty-state { text-align: center; padding: 32px 16px; color: var(--text-tertiary); font-style: italic; }
+    .empty-state.compact { padding: 20px 16px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    
+    /* Loading & Error */
+    .loading { display: flex; justify-content: center; align-items: center; min-height: 300px; color: var(--text-tertiary); }
+    .error-state { text-align: center; padding: 48px; color: var(--accent-rose); }
+    .error-state h2 { font-family: var(--font-display); margin-bottom: 12px; }
+    
+    /* Pending Queue */
+    .pending-toggle {
+      background: none;
+      border: none;
+      color: var(--accent-violet);
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 8px 0;
+      font-family: var(--font-body);
+    }
+    .pending-toggle:hover { text-decoration: underline; }
+    .pending-list { margin-top: 8px; padding: 12px; background: var(--bg-float); border-radius: var(--radius-sm); display: none; }
+    .pending-list.expanded { display: block; }
+    .pending-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-subtle); font-size: 0.8rem; }
     .pending-item:last-child { border-bottom: none; }
-    .pending-item-type { color: var(--color-accent); text-transform: uppercase; font-weight: 600; font-size: 0.7rem; }
-    .pending-item-reason { color: var(--color-text-muted); }
-    .pending-item-age { color: var(--color-warning); }
-    .work-item { background: var(--color-surface-alt); border-radius: 8px; padding: var(--space-4); margin-bottom: var(--space-4); }
-    .work-item-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-2); }
-    .work-item-name { font-weight: 600; color: var(--color-text); }
-    .work-item-blocker { font-size: 0.875rem; color: var(--color-error); margin-top: var(--space-2); padding: var(--space-2) var(--space-3); background: rgba(255, 107, 157, 0.1); border-radius: 6px; border-left: 3px solid var(--color-error); }
-    .work-item-countdown { margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--color-border); font-size: 0.8rem; color: var(--color-text-muted); display: flex; align-items: center; gap: var(--space-2); }
-    .completions-list { list-style: none; }
-    .completions-list li { padding: var(--space-2) 0; font-size: 0.875rem; display: flex; justify-content: space-between; border-bottom: 1px solid var(--color-border); }
-    .completions-list li:last-child { border-bottom: none; }
-    .completion-task { color: var(--color-text); }
-    .completion-date { color: var(--color-text-muted); font-size: 0.8rem; }
-    .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
-    .metric-card { text-align: center; padding: var(--space-4); background: var(--color-surface-alt); border-radius: 8px; }
-    .metric-value { font-size: 2rem; font-weight: 700; color: var(--color-primary); }
-    .metric-value.warning { color: var(--color-warning); }
-    .metric-value.good { color: var(--color-success); }
-    .metric-label { font-size: 0.75rem; color: var(--color-text-muted); margin-top: var(--space-1); text-transform: uppercase; letter-spacing: 0.5px; }
-    .metric-countdown { font-size: 0.7rem; color: var(--color-text-muted); margin-top: var(--space-1); }
-    .metric-countdown.warning { color: var(--color-warning); }
-    .metric-countdown.urgent { color: var(--color-error); }
-    .empty-state { text-align: center; padding: var(--space-6); color: var(--color-text-muted); font-style: italic; }
-    .empty-state.compact { padding: var(--space-4); }
-    .server-health { margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--color-border); }
-    .server-metrics { display: flex; flex-direction: column; gap: var(--space-3); }
-    .server-metric { display: flex; align-items: center; gap: var(--space-3); }
-    .metric-bar { flex: 1; height: 8px; background: var(--color-surface-alt); border-radius: 4px; overflow: hidden; min-width: 80px; }
-    .metric-fill { display: block; height: 100%; border-radius: 4px; transition: width 0.3s ease; }
-    .metric-fill.green { background: var(--color-success); }
-    .metric-fill.amber { background: var(--color-warning); }
-    .metric-fill.red { background: var(--color-error); }
-    .metric-info { display: flex; justify-content: space-between; min-width: 160px; font-size: 0.8rem; }
-    .metric-name { font-weight: 600; color: var(--color-text); }
-    .metric-detail { color: var(--color-text-muted); }
-    .summary-row { margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--color-border); }
-    .summary-text { font-size: 0.875rem; color: var(--color-text-muted); }
-    .summary-text.all-good { color: var(--color-success); font-weight: 600; }
-    .summary-text.warning { color: var(--color-warning); font-weight: 600; }
-    .loading { display: flex; justify-content: center; align-items: center; min-height: 200px; color: var(--color-text-muted); }
-    .error-state { text-align: center; padding: var(--space-8); color: var(--color-error); }
-    .error-state h2 { margin-bottom: var(--space-4); }
-    .section-header { font-size: 0.75rem; color: var(--color-text-muted); margin: var(--space-4) 0 var(--space-2); text-transform: uppercase; letter-spacing: 0.5px; }
-    /* Pending Approvals */
-    .headline-item { background: var(--color-surface-alt); border-radius: 8px; padding: var(--space-4); margin-bottom: var(--space-4); border-left: 3px solid var(--color-warning); }
-    .headline-text { font-weight: 600; color: var(--color-warning); font-size: 0.95rem; }
-    .approval-item { background: var(--color-surface-alt); border-radius: 8px; padding: var(--space-3); margin-bottom: var(--space-2); }
-    .approval-item:last-child { margin-bottom: 0; }
-    .approval-desc { font-weight: 600; color: var(--color-text); margin-bottom: var(--space-1); }
-    .approval-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--color-text-muted); }
-    .approval-reason { color: var(--color-info); }
-    .approval-age { color: var(--color-warning); }
-    .approval-source { font-size: 0.75rem; color: var(--color-text-muted); margin-top: var(--space-1); }
-    /* Governance alignment */
-    .governance-row { display: flex; align-items: center; gap: var(--space-2); font-size: 0.875rem; }
-    .governance-row.aligned { color: var(--color-success); }
-    .governance-row.mismatch { color: var(--color-warning); }
-    .mismatch-list { font-size: 0.75rem; color: var(--color-text-muted); margin-top: var(--space-1); }
-    @media (max-width: 767px) { .container { padding: var(--space-4); } .header { flex-direction: column; align-items: flex-start; gap: var(--space-3); } .header-left { flex-direction: column; align-items: flex-start; gap: var(--space-2); } .services-grid { grid-template-columns: 1fr; } .metrics-grid { grid-template-columns: 1fr; } }
+    .pending-type { color: var(--accent-violet); text-transform: uppercase; font-weight: 600; font-size: 0.7rem; }
+    .pending-reason { color: var(--text-tertiary); }
+    .pending-age { color: var(--accent-amber); }
+    
+    /* Responsive */
+    @media (max-width: 767px) {
+      .container { padding: 20px 16px; }
+      .header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .header-left { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .services-grid { flex-direction: column; }
+      .metrics-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
-  <!-- Password Gate -->
+  <div class="ambient-bg"></div>
+  
+  <!-- Auth Overlay -->
   <div class="auth-overlay" id="auth-overlay">
-    <div class="auth-box">
-      <h2>🦊 FlowDesk</h2>
-      <p>Enter password to continue</p>
-      <input type="password" id="auth-password" placeholder="Password" autocomplete="off">
-      <button onclick="checkPassword()">Enter</button>
+    <div class="auth-card">
+      <div class="auth-logo">FlowDesk</div>
+      <p class="auth-subtitle">Enter password to continue</p>
+      <input type="password" class="auth-input" id="auth-password" placeholder="Password" autocomplete="off">
+      <button class="auth-btn" onclick="checkPassword()">Continue</button>
       <div class="auth-error" id="auth-error">Incorrect password</div>
     </div>
   </div>
   
   <div class="app-content" id="app-content">
-  <div class="container">
-    <header class="header">
-      <div class="header-left">
-        <h1>🦊 FlowDesk</h1>
-        <div id="trust-state"></div>
-        <div class="theme-switch" id="theme-switch">
-          <span class="theme-switch-option light-opt"><span class="theme-switch-icon">☀️</span>Light</span>
-          <span class="theme-switch-option dark-opt active"><span class="theme-switch-icon">🌙</span>Dark</span>
+    <div class="container">
+      <header class="header">
+        <div class="header-left">
+          <div class="logo">
+            <div class="logo-icon">🦊</div>
+            <span>FlowDesk</span>
+          </div>
+          <div id="trust-state"></div>
+          <div class="theme-toggle" id="theme-toggle">
+            <span class="theme-option light-opt">☀️ Light</span>
+            <span class="theme-option dark-opt active">🌙 Dark</span>
+          </div>
         </div>
-      </div>
-      <div class="meta">
-        <span id="generated-at">Loading...</span>
-        <span class="generated-by" id="generated-by"></span>
-      </div>
-    </header>
-    <div id="dashboard" class="loading">Loading dashboard...</div>
+        <div class="header-meta">
+          <span id="generated-at">Loading...</span>
+          <span class="highlight" id="generated-by"></span>
+        </div>
+      </header>
+      <div id="dashboard" class="loading">Loading dashboard...</div>
+    </div>
   </div>
+  
   <script>
     // Theme toggle
-    function getTheme() {
-      try { return localStorage.getItem('flowdesk-theme'); } catch(e) { return null; }
-    }
-    function setTheme(theme) {
-      try { localStorage.setItem('flowdesk-theme', theme); } catch(e) {}
-    }
+    function getTheme() { try { return localStorage.getItem('flowdesk-theme'); } catch(e) { return null; } }
+    function setTheme(theme) { try { localStorage.setItem('flowdesk-theme', theme); } catch(e) {} }
     function toggleTheme() {
       var html = document.documentElement;
-      var sw = document.getElementById('theme-switch');
-      var lightOpt = sw.querySelector('.light-opt');
-      var darkOpt = sw.querySelector('.dark-opt');
+      var lightOpt = document.querySelector('.light-opt');
+      var darkOpt = document.querySelector('.dark-opt');
       if (html.getAttribute('data-theme') === 'light') {
         html.removeAttribute('data-theme');
         lightOpt.classList.remove('active');
@@ -222,22 +614,17 @@
         setTheme('light');
       }
     }
-    // Apply saved theme on load
     (function() {
       var saved = getTheme();
-      if (saved === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
+      if (saved === 'light') document.documentElement.setAttribute('data-theme', 'light');
       document.addEventListener('DOMContentLoaded', function() {
-        var sw = document.getElementById('theme-switch');
-        if (sw) {
-          var lightOpt = sw.querySelector('.light-opt');
-          var darkOpt = sw.querySelector('.dark-opt');
+        var toggle = document.getElementById('theme-toggle');
+        if (toggle) {
           if (saved === 'light') {
-            darkOpt.classList.remove('active');
-            lightOpt.classList.add('active');
+            document.querySelector('.dark-opt').classList.remove('active');
+            document.querySelector('.light-opt').classList.add('active');
           }
-          sw.onclick = toggleTheme;
+          toggle.onclick = toggleTheme;
         }
       });
     })();
@@ -248,88 +635,114 @@
         const response = await fetch('/DASHBOARD_STATE.json');
         if (!response.ok) throw new Error('Failed to fetch');
         return await response.json();
-      } catch (error) {
-        throw new Error('Could not load dashboard state');
-      }
+      } catch (error) { throw new Error('Could not load dashboard state'); }
     }
-    function formatRelativeTime(isoString) { if (!isoString) return 'Unknown'; const date = new Date(isoString); const now = new Date(); const diffMs = now - date; const diffMins = Math.floor(diffMs / 60000); const diffHours = Math.floor(diffMs / 3600000); const diffDays = Math.floor(diffMs / 86400000); if (diffMins < 1) return 'Just now'; if (diffMins < 60) return `${diffMins} min ago`; if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`; return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`; }
-    function formatDate(isoString) { if (!isoString) return ''; const date = new Date(isoString); return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
-    function formatDays(days) { if (days === null || days === undefined) return '—'; return `${days} day${days !== 1 ? 's' : ''}`; }
-    function formatDaysDecimal(days) { if (days === null || days === undefined) return '—'; if (days < 1) { const hours = Math.round(days * 24); return `${hours}h`; } return `${days.toFixed(1)}d`; }
+    
+    function formatRelativeTime(isoString) { if (!isoString) return 'Unknown'; const date = new Date(isoString); const now = new Date(); const diffMs = now - date; const diffMins = Math.floor(diffMs / 60000); const diffHours = Math.floor(diffMs / 3600000); const diffDays = Math.floor(diffMs / 86400000); if (diffMins < 1) return 'Just now'; if (diffMins < 60) return diffMins + ' min ago'; if (diffHours < 24) return diffHours + ' hour' + (diffHours > 1 ? 's' : '') + ' ago'; return diffDays + ' day' + (diffDays > 1 ? 's' : '') + ' ago'; }
+    function formatDate(isoString) { if (!isoString) return ''; return new Date(isoString).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+    function formatDays(days) { if (days === null || days === undefined) return '—'; return days + ' day' + (days !== 1 ? 's' : ''); }
+    function formatDaysDecimal(days) { if (days === null || days === undefined) return '—'; if (days < 1) return Math.round(days * 24) + 'h'; return days.toFixed(1) + 'd'; }
     function getThresholdClass(percent) { if (percent < 70) return 'green'; if (percent < 90) return 'amber'; return 'red'; }
     function getCountdownClass(daysUntil) { if (daysUntil <= 1) return 'urgent'; if (daysUntil <= 3) return 'warning'; return ''; }
-    function togglePendingQueue() { const list = document.getElementById('pending-queue-list'); const toggle = document.getElementById('pending-queue-toggle'); if (list.classList.contains('expanded')) { list.classList.remove('expanded'); toggle.innerHTML = '▶ Show details'; } else { list.classList.add('expanded'); toggle.innerHTML = '▼ Hide details'; } }
-    function renderTrustState(ts) { const container = document.getElementById('trust-state'); if (!ts) { container.innerHTML = ''; return; } const levelClass = ts.level === 'at-risk' ? 'at-risk' : ts.level; const levelText = ts.level === 'at-risk' ? 'At Risk' : ts.level.charAt(0).toUpperCase() + ts.level.slice(1); container.innerHTML = `<div class="trust-badge ${levelClass}"><span>${ts.emoji}</span><span>${levelText}</span></div>${ts.triggers && ts.triggers.length > 0 ? `<div class="trust-triggers">${ts.triggers.join(' · ')}</div>` : ''}`; }
-    function renderDashboard(data) {
-      const dashboard = document.getElementById('dashboard');
-      const generatedAt = document.getElementById('generated-at');
-      const generatedBy = document.getElementById('generated-by');
-      generatedAt.textContent = `Generated ${formatRelativeTime(data.generatedAt)}`;
-      if (data.generatedBy && data.generatedBy !== 'manual') { generatedBy.textContent = ` · ${data.generatedBy}`; }
-      renderTrustState(data.trustState);
-      const sh = data.systemHealth || {};
-      const wp = data.workPulse || {};
-      const pa = data.pendingApprovals || {};
-      const gp = data.governancePulse || {};
-      const sl = sh.sessionLock || {};
-      const ga = gp.governanceAlignment || {};
-      const pendingTotal = (sh.pendingOperationsCount || 0) + (sh.pendingMessagesCount || 0);
-      const hasPendingQueue = pendingTotal > 0 && sh.pendingQueue && sh.pendingQueue.length > 0;
-      dashboard.className = 'grid';
-      dashboard.innerHTML = `
-        <div class="panel">
-          <div class="panel-header"><h2>System Health</h2><span class="icon">🖥️</span></div>
-          <div class="row"><span class="row-label">Session</span><span class="status-badge ${sh.sessionActive ? 'online' : 'offline'}">${sh.sessionActive ? 'Online' : 'Offline'}</span></div>
-          <div class="row"><span class="row-label">State</span><span class="status-badge ${sh.currentState === 'active' ? 'active' : 'idle'}">${sh.currentState === 'active' ? 'Active' : 'Idle'}</span></div>
-          ${sh.activeTask ? `<div class="row"><span class="row-label">Current Task</span><span class="row-value">${sh.activeTask}</span></div>` : ''}
-          <div class="row"><span class="row-label">Last Heartbeat</span><span class="row-value">${sh.heartbeatStale ? '<span class="status-badge stale">Stale</span>' : ''}${formatRelativeTime(sh.lastHeartbeat)}</span></div>
-          <div class="row"><span class="row-label">Session Lock</span><span class="status-badge ${sl.status || 'writable'}">${sl.status === 'read-only' ? 'Read-Only' : sl.status === 'stale' ? 'Stale' : 'Writable'}${sl.staleMinutes ? ` (${sl.staleMinutes}m)` : ''}</span></div>
-          <div class="row"><span class="row-label">Pending Ops/Msgs</span><span class="row-value"><span class="status-dot ${pendingTotal > 0 ? 'degraded' : 'ok'}"></span>${sh.pendingOperationsCount || 0} / ${sh.pendingMessagesCount || 0}</span></div>
-          ${hasPendingQueue ? `<div class="pending-queue"><button id="pending-queue-toggle" class="pending-queue-toggle" onclick="togglePendingQueue()">▶ Show details</button><div id="pending-queue-list" class="pending-queue-list">${sh.pendingQueue.map(item => `<div class="pending-item"><div><span class="pending-item-type">${item.type}</span> ${item.action || item.target || ''}</div><div><span class="pending-item-reason">${item.reason}</span> · <span class="pending-item-age">${item.ageMinutes}m</span></div></div>`).join('')}</div></div>` : ''}
-          <div class="services-grid">${Object.entries(sh.services || {}).map(([name, status]) => `<div class="service-item"><span class="status-dot ${status}"></span><span class="service-name">${name}</span></div>`).join('')}</div>
-          ${sh.server ? `<div class="server-health"><div class="section-header">Server Health</div><div class="server-metrics"><div class="server-metric"><span class="metric-bar"><span class="metric-fill ${getThresholdClass(sh.server.diskUsedPercent)}" style="width: ${sh.server.diskUsedPercent}%"></span></span><span class="metric-info"><span class="metric-name">Disk</span><span class="metric-detail">${sh.server.diskUsedGb}/${sh.server.diskTotalGb} GB</span></span></div><div class="server-metric"><span class="metric-bar"><span class="metric-fill ${getThresholdClass(sh.server.ramUsedPercent)}" style="width: ${sh.server.ramUsedPercent}%"></span></span><span class="metric-info"><span class="metric-name">RAM</span><span class="metric-detail">${Math.round(sh.server.ramUsedMb / 1024 * 10) / 10}/${Math.round(sh.server.ramTotalMb / 1024 * 10) / 10} GB</span></span></div><div class="server-metric"><span class="metric-bar"><span class="metric-fill ${getThresholdClass(sh.server.cpuLoad * 100)}" style="width: ${Math.min(sh.server.cpuLoad * 100, 100)}%"></span></span><span class="metric-info"><span class="metric-name">CPU</span><span class="metric-detail">Load ${sh.server.cpuLoad}</span></span></div></div><div class="row" style="margin-top: var(--space-2);"><span class="row-label">Uptime</span><span class="row-value">${sh.server.uptimeDays}d ${sh.server.uptimeHours}h</span></div></div>` : ''}
-          ${Object.values(sh.services || {}).every(s => s === 'ok') ? `<div class="summary-row"><span class="summary-text all-good">✓ All Systems Operational</span></div>` : ''}
-        </div>
-        
-        <div class="panel">
-          <div class="panel-header"><h2>Work Pulse</h2><span class="icon">⚡</span></div>
-          ${wp.activeItem && wp.activeItem.name ? `<div class="work-item"><div class="work-item-header"><span class="work-item-name">${wp.activeItem.name}</span><span class="status-badge ${wp.activeItem.status === 'blocked' ? 'stale' : wp.activeItem.status === 'active' ? 'active' : 'idle'}">${wp.activeItem.status || 'idle'}</span></div><div class="row"><span class="row-label">Last touched</span><span class="row-value">${formatDays(wp.activeItem.daysSinceTouch)} ago${wp.staleFlag ? ' ⚠️' : ''}</span></div>${wp.activeItem.blocker ? `<div class="work-item-blocker">${wp.activeItem.blocker}</div>` : ''}${wp.activeItem.daysUntilStale !== null && wp.activeItem.daysUntilStale !== undefined ? `<div class="work-item-countdown"><span>⏱️</span><span class="countdown ${getCountdownClass(wp.activeItem.daysUntilStale)}">Stalls in ${formatDaysDecimal(wp.activeItem.daysUntilStale)}</span></div>` : ''}</div>` : `<div class="empty-state">No active work</div>`}
-          <div class="section-header">Completed This Week</div>
-          ${wp.completedThisWeek && wp.completedThisWeek.length > 0 ? `<ul class="completions-list">${wp.completedThisWeek.slice(0, 5).map(item => `<li><span class="completion-task">${item.task}</span><span class="completion-date">${formatDate(item.completedAt)}</span></li>`).join('')}</ul>` : `<div class="empty-state">No completions yet</div>`}
-        </div>
-        
-        <div class="panel">
-          <div class="panel-header"><h2>Pending Approvals</h2>${pa.count > 0 ? `<span class="count-badge">${pa.count}</span>` : ''}<span class="icon">⏳</span></div>
-          ${pa.headline ? `<div class="headline-item"><div class="headline-text">Awaiting: ${pa.headline}</div></div>` : ''}
-          ${pa.items && pa.items.length > 0 ? pa.items.map(item => `<div class="approval-item"><div class="approval-desc">${item.description}</div><div class="approval-meta"><span class="approval-reason">${item.reason}</span><span class="approval-age">${item.age}</span></div><div class="approval-source">Source: ${item.source}</div></div>`).join('') : `<div class="empty-state compact"><span class="status-dot ok"></span>No pending approvals</div>`}
-        </div>
-        
-        <div class="panel">
-          <div class="panel-header"><h2>Governance Pulse</h2><span class="icon">📋</span></div>
-          <div class="metrics-grid">
-            <div class="metric-card"><div class="metric-value ${gp.debtCount > 0 ? (gp.oldestDebtDays > 14 ? 'warning' : '') : 'good'}">${gp.debtCount || 0}</div><div class="metric-label">Open Debt</div>${gp.oldestDebtDaysUntilAlert !== null && gp.oldestDebtDaysUntilAlert !== undefined && gp.debtCount > 0 ? `<div class="metric-countdown ${getCountdownClass(gp.oldestDebtDaysUntilAlert)}">Alert in ${gp.oldestDebtDaysUntilAlert}d</div>` : ''}</div>
-            <div class="metric-card"><div class="metric-value ${gp.oldestDebtDays > 14 ? 'warning' : ''}">${formatDays(gp.oldestDebtDays)}</div><div class="metric-label">Oldest Debt</div></div>
-            <div class="metric-card"><div class="metric-value">${gp.alertsThisWeek || 0}</div><div class="metric-label">Alerts This Week</div></div>
-            <div class="metric-card"><div class="metric-value ${gp.unpropagatedCorrections > 0 ? 'warning' : 'good'}">${gp.unpropagatedCorrections || 0}</div><div class="metric-label">Corrections</div></div>
-          </div>
-          <div class="summary-row">
-            <div class="row"><span class="row-label">Latest Scorecard</span><span class="row-value">${gp.latestScorecard && gp.latestScorecard.date ? `${formatDate(gp.latestScorecard.date)}${gp.latestScorecard.summary ? ' · ' + gp.latestScorecard.summary : ''}` : 'No reviews yet'}</span></div>
-            <div class="row"><span class="row-label">Governance</span><span class="governance-row ${ga.aligned !== false ? 'aligned' : 'mismatch'}">${ga.aligned !== false ? '✓ Aligned' : '⚠️ Mismatch'}${ga.mismatches && ga.mismatches.length > 0 ? `<div class="mismatch-list">${ga.mismatches.join(', ')}</div>` : ''}</span></div>
-          </div>
-        </div>
-      `;
+    function togglePendingQueue() { var list = document.getElementById('pending-list'); var toggle = document.getElementById('pending-toggle'); if (list.classList.contains('expanded')) { list.classList.remove('expanded'); toggle.innerHTML = '▶ Show details'; } else { list.classList.add('expanded'); toggle.innerHTML = '▼ Hide details'; } }
+    
+    function renderTrustState(ts) {
+      var container = document.getElementById('trust-state');
+      if (!ts) { container.innerHTML = ''; return; }
+      var levelClass = ts.level === 'at-risk' ? 'at-risk' : ts.level;
+      var levelText = ts.level === 'at-risk' ? 'At Risk' : ts.level.charAt(0).toUpperCase() + ts.level.slice(1);
+      container.innerHTML = '<div class="trust-badge ' + levelClass + '"><span class="trust-dot"></span><span>' + levelText + '</span></div>';
     }
-    function renderError(message) { const dashboard = document.getElementById('dashboard'); dashboard.className = ''; dashboard.innerHTML = `<div class="error-state"><h2>Dashboard Unavailable</h2><p>${message}</p><p style="margin-top: var(--space-4); font-size: 0.875rem; color: var(--color-text-muted);">Trigger a refresh via Telegram: "dashboard" or "refresh dashboard"</p></div>`; }
-    loadData().then(renderDashboard).catch(err => renderError(err.message));
+    
+    function renderDashboard(data) {
+      var dashboard = document.getElementById('dashboard');
+      document.getElementById('generated-at').textContent = 'Updated ' + formatRelativeTime(data.generatedAt);
+      if (data.generatedBy && data.generatedBy !== 'manual') document.getElementById('generated-by').textContent = ' · ' + data.generatedBy;
+      renderTrustState(data.trustState);
+      
+      var sh = data.systemHealth || {};
+      var wp = data.workPulse || {};
+      var pa = data.pendingApprovals || {};
+      var gp = data.governancePulse || {};
+      var sl = sh.sessionLock || {};
+      var ga = gp.governanceAlignment || {};
+      var pendingTotal = (sh.pendingOperationsCount || 0) + (sh.pendingMessagesCount || 0);
+      var hasPendingQueue = pendingTotal > 0 && sh.pendingQueue && sh.pendingQueue.length > 0;
+      
+      dashboard.className = 'grid';
+      dashboard.innerHTML = '' +
+        '<div class="panel">' +
+          '<div class="panel-header"><span class="panel-title">System Health</span><span class="panel-icon">🖥️</span></div>' +
+          '<div class="status-row"><span class="status-label">Session</span><span class="status-pill ' + (sh.sessionActive ? 'online' : 'offline') + '">' + (sh.sessionActive ? 'Online' : 'Offline') + '</span></div>' +
+          '<div class="status-row"><span class="status-label">State</span><span class="status-pill ' + (sh.currentState === 'active' ? 'active' : 'idle') + '">' + (sh.currentState === 'active' ? 'Active' : 'Idle') + '</span></div>' +
+          (sh.activeTask ? '<div class="status-row"><span class="status-label">Task</span><span class="status-value">' + sh.activeTask + '</span></div>' : '') +
+          '<div class="status-row"><span class="status-label">Heartbeat</span><span class="status-value">' + (sh.heartbeatStale ? '<span class="status-pill stale">Stale</span>' : '') + formatRelativeTime(sh.lastHeartbeat) + '</span></div>' +
+          '<div class="status-row"><span class="status-label">Lock</span><span class="status-pill ' + (sl.status || 'writable') + '">' + (sl.status === 'read-only' ? 'Read-Only' : sl.status === 'stale' ? 'Stale' : 'Writable') + '</span></div>' +
+          '<div class="status-row"><span class="status-label">Pending</span><span class="status-value"><span class="status-dot ' + (pendingTotal > 0 ? 'degraded' : 'ok') + '"></span>' + (sh.pendingOperationsCount || 0) + ' / ' + (sh.pendingMessagesCount || 0) + '</span></div>' +
+          (hasPendingQueue ? '<button class="pending-toggle" id="pending-toggle" onclick="togglePendingQueue()">▶ Show details</button><div class="pending-list" id="pending-list">' + sh.pendingQueue.map(function(item) { return '<div class="pending-item"><div><span class="pending-type">' + item.type + '</span> ' + (item.action || item.target || '') + '</div><div><span class="pending-reason">' + item.reason + '</span> · <span class="pending-age">' + item.ageMinutes + 'm</span></div></div>'; }).join('') + '</div>' : '') +
+          '<div class="services-grid">' + Object.entries(sh.services || {}).map(function(entry) { return '<div class="service-item"><span class="status-dot ' + entry[1] + '"></span><span class="service-name">' + entry[0] + '</span></div>'; }).join('') + '</div>' +
+          (sh.server ? '<div class="server-section"><div class="section-label">Server</div>' +
+            '<div class="metric-row"><span class="metric-bar"><span class="metric-fill ' + getThresholdClass(sh.server.diskUsedPercent) + '" style="width:' + sh.server.diskUsedPercent + '%"></span></span><span class="metric-info"><span class="metric-name">Disk</span><span class="metric-detail">' + sh.server.diskUsedGb + '/' + sh.server.diskTotalGb + ' GB</span></span></div>' +
+            '<div class="metric-row"><span class="metric-bar"><span class="metric-fill ' + getThresholdClass(sh.server.ramUsedPercent) + '" style="width:' + sh.server.ramUsedPercent + '%"></span></span><span class="metric-info"><span class="metric-name">RAM</span><span class="metric-detail">' + (Math.round(sh.server.ramUsedMb / 1024 * 10) / 10) + '/' + (Math.round(sh.server.ramTotalMb / 1024 * 10) / 10) + ' GB</span></span></div>' +
+            '<div class="metric-row"><span class="metric-bar"><span class="metric-fill ' + getThresholdClass(sh.server.cpuLoad * 100) + '" style="width:' + Math.min(sh.server.cpuLoad * 100, 100) + '%"></span></span><span class="metric-info"><span class="metric-name">CPU</span><span class="metric-detail">Load ' + sh.server.cpuLoad + '</span></span></div>' +
+            '<div class="status-row" style="margin-top:8px"><span class="status-label">Uptime</span><span class="status-value">' + sh.server.uptimeDays + 'd ' + sh.server.uptimeHours + 'h</span></div></div>' : '') +
+          (Object.values(sh.services || {}).every(function(s) { return s === 'ok'; }) ? '<div class="summary-good">✓ All Systems Operational</div>' : '') +
+        '</div>' +
+        
+        '<div class="panel">' +
+          '<div class="panel-header"><span class="panel-title">Work Pulse</span><span class="panel-icon">⚡</span></div>' +
+          (wp.activeItem && wp.activeItem.name ? 
+            '<div class="work-card">' +
+              '<div class="work-header"><span class="work-name">' + wp.activeItem.name + '</span><span class="status-pill ' + (wp.activeItem.status === 'blocked' ? 'stale' : wp.activeItem.status === 'active' ? 'active' : 'idle') + '">' + (wp.activeItem.status || 'idle') + '</span></div>' +
+              '<div class="status-row"><span class="status-label">Last touched</span><span class="status-value">' + formatDays(wp.activeItem.daysSinceTouch) + ' ago' + (wp.staleFlag ? ' ⚠️' : '') + '</span></div>' +
+              (wp.activeItem.blocker ? '<div class="work-blocker">' + wp.activeItem.blocker + '</div>' : '') +
+              (wp.activeItem.daysUntilStale !== null && wp.activeItem.daysUntilStale !== undefined ? '<div class="work-countdown">⏱️ <span class="countdown-tag ' + getCountdownClass(wp.activeItem.daysUntilStale) + '">Stalls in ' + formatDaysDecimal(wp.activeItem.daysUntilStale) + '</span></div>' : '') +
+            '</div>' 
+            : '<div class="empty-state">No active work</div>') +
+          '<div class="section-label">Completed This Week</div>' +
+          (wp.completedThisWeek && wp.completedThisWeek.length > 0 ? 
+            '<ul class="completion-list">' + wp.completedThisWeek.slice(0, 5).map(function(item) { return '<li class="completion-item"><span class="completion-task">' + item.task + '</span><span class="completion-date">' + formatDate(item.completedAt) + '</span></li>'; }).join('') + '</ul>' 
+            : '<div class="empty-state">No completions yet</div>') +
+        '</div>' +
+        
+        '<div class="panel">' +
+          '<div class="panel-header"><span class="panel-title">Pending Approvals</span>' + (pa.count > 0 ? '<span class="count-badge">' + pa.count + '</span>' : '') + '<span class="panel-icon">⏳</span></div>' +
+          (pa.headline ? '<div class="approval-headline"><div class="approval-headline-text">Awaiting: ' + pa.headline + '</div></div>' : '') +
+          (pa.items && pa.items.length > 0 ? 
+            pa.items.map(function(item) { return '<div class="approval-card"><div class="approval-desc">' + item.description + '</div><div class="approval-meta"><span class="approval-reason">' + item.reason + '</span><span class="approval-age">' + item.age + '</span></div><div class="approval-source">Source: ' + item.source + '</div></div>'; }).join('') 
+            : '<div class="empty-state compact"><span class="status-dot ok"></span>No pending approvals</div>') +
+        '</div>' +
+        
+        '<div class="panel">' +
+          '<div class="panel-header"><span class="panel-title">Governance Pulse</span><span class="panel-icon">📋</span></div>' +
+          '<div class="metrics-grid">' +
+            '<div class="metric-card"><div class="metric-value ' + (gp.debtCount > 0 ? (gp.oldestDebtDays > 14 ? 'warning' : '') : 'good') + '">' + (gp.debtCount || 0) + '</div><div class="metric-label">Open Debt</div>' + (gp.oldestDebtDaysUntilAlert !== null && gp.oldestDebtDaysUntilAlert !== undefined && gp.debtCount > 0 ? '<div class="metric-countdown-small ' + getCountdownClass(gp.oldestDebtDaysUntilAlert) + '">Alert in ' + gp.oldestDebtDaysUntilAlert + 'd</div>' : '') + '</div>' +
+            '<div class="metric-card"><div class="metric-value ' + (gp.oldestDebtDays > 14 ? 'warning' : '') + '">' + formatDays(gp.oldestDebtDays) + '</div><div class="metric-label">Oldest Debt</div></div>' +
+            '<div class="metric-card"><div class="metric-value">' + (gp.alertsThisWeek || 0) + '</div><div class="metric-label">Alerts</div></div>' +
+            '<div class="metric-card"><div class="metric-value ' + (gp.unpropagatedCorrections > 0 ? 'warning' : 'good') + '">' + (gp.unpropagatedCorrections || 0) + '</div><div class="metric-label">Corrections</div></div>' +
+          '</div>' +
+          '<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border-subtle)">' +
+            '<div class="status-row"><span class="status-label">Scorecard</span><span class="status-value">' + (gp.latestScorecard && gp.latestScorecard.date ? formatDate(gp.latestScorecard.date) + (gp.latestScorecard.summary ? ' · ' + gp.latestScorecard.summary : '') : 'No reviews yet') + '</span></div>' +
+            '<div class="status-row"><span class="status-label">Governance</span><span class="governance-row ' + (ga.aligned !== false ? 'aligned' : 'mismatch') + '">' + (ga.aligned !== false ? '✓ Aligned' : '⚠️ Mismatch') + '</span></div>' +
+          '</div>' +
+        '</div>';
+    }
+    
+    function renderError(message) {
+      var dashboard = document.getElementById('dashboard');
+      dashboard.className = '';
+      dashboard.innerHTML = '<div class="error-state"><h2>Dashboard Unavailable</h2><p>' + message + '</p><p style="margin-top:16px;font-size:0.875rem;color:var(--text-tertiary)">Trigger refresh via Telegram: "dashboard"</p></div>';
+    }
+    
+    loadData().then(renderDashboard).catch(function(err) { renderError(err.message); });
   </script>
-  </div><!-- end app-content -->
   
   <script>
     // Password Gate
-    var PASS_HASH = '(DashBoard)';
+    var PASS = '(DashBoard)';
     function checkPassword() {
       var input = document.getElementById('auth-password').value;
-      if (input === PASS_HASH) {
+      if (input === PASS) {
         try { sessionStorage.setItem('flowdesk-auth', 'true'); } catch(e) {}
         document.getElementById('auth-overlay').classList.add('hidden');
         document.getElementById('app-content').classList.add('visible');
@@ -337,9 +750,7 @@
         document.getElementById('auth-error').classList.add('visible');
       }
     }
-    document.getElementById('auth-password').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') checkPassword();
-    });
+    document.getElementById('auth-password').addEventListener('keypress', function(e) { if (e.key === 'Enter') checkPassword(); });
     (function() {
       try {
         if (sessionStorage.getItem('flowdesk-auth') === 'true') {
