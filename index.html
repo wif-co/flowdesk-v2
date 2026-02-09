@@ -53,9 +53,15 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: var(--space-8);
+      margin-bottom: var(--space-6);
       padding-bottom: var(--space-4);
       border-bottom: 1px solid var(--color-border);
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
     }
     
     .header h1 {
@@ -72,6 +78,43 @@
     .header .meta .generated-by {
       color: var(--color-accent);
       font-weight: 600;
+    }
+    
+    /* Trust State Badge */
+    .trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .trust-badge.stable {
+      background: rgba(78, 205, 196, 0.15);
+      color: var(--color-success);
+      border: 1px solid rgba(78, 205, 196, 0.3);
+    }
+    
+    .trust-badge.caution {
+      background: rgba(255, 217, 61, 0.15);
+      color: var(--color-warning);
+      border: 1px solid rgba(255, 217, 61, 0.3);
+    }
+    
+    .trust-badge.at-risk {
+      background: rgba(255, 107, 157, 0.15);
+      color: var(--color-error);
+      border: 1px solid rgba(255, 107, 157, 0.3);
+    }
+    
+    .trust-triggers {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      margin-top: var(--space-1);
     }
     
     /* Grid */
@@ -158,6 +201,16 @@
       color: var(--color-error);
     }
     
+    .status-badge.writable {
+      background: rgba(78, 205, 196, 0.15);
+      color: var(--color-success);
+    }
+    
+    .status-badge.read-only {
+      background: rgba(255, 217, 61, 0.15);
+      color: var(--color-warning);
+    }
+    
     /* Rows */
     .row {
       display: flex;
@@ -183,6 +236,26 @@
       color: var(--color-text);
     }
     
+    /* Countdown indicator */
+    .countdown {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      margin-left: var(--space-2);
+      padding: 2px 6px;
+      background: var(--color-surface-alt);
+      border-radius: 4px;
+    }
+    
+    .countdown.warning {
+      color: var(--color-warning);
+      background: rgba(255, 217, 61, 0.1);
+    }
+    
+    .countdown.urgent {
+      color: var(--color-error);
+      background: rgba(255, 107, 157, 0.1);
+    }
+    
     /* Services Grid */
     .services-grid {
       display: grid;
@@ -200,6 +273,67 @@
     
     .service-name {
       text-transform: capitalize;
+    }
+    
+    /* Pending Queue */
+    .pending-queue {
+      margin-top: var(--space-3);
+    }
+    
+    .pending-queue-toggle {
+      background: none;
+      border: none;
+      color: var(--color-accent);
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: var(--space-1) 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+    
+    .pending-queue-toggle:hover {
+      text-decoration: underline;
+    }
+    
+    .pending-queue-list {
+      margin-top: var(--space-2);
+      padding: var(--space-3);
+      background: var(--color-surface-alt);
+      border-radius: 8px;
+      display: none;
+    }
+    
+    .pending-queue-list.expanded {
+      display: block;
+    }
+    
+    .pending-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-2) 0;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 0.8rem;
+    }
+    
+    .pending-item:last-child {
+      border-bottom: none;
+    }
+    
+    .pending-item-type {
+      color: var(--color-accent);
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 0.7rem;
+    }
+    
+    .pending-item-reason {
+      color: var(--color-text-muted);
+    }
+    
+    .pending-item-age {
+      color: var(--color-warning);
     }
     
     /* Work Item */
@@ -230,6 +364,17 @@
       background: rgba(255, 107, 157, 0.1);
       border-radius: 6px;
       border-left: 3px solid var(--color-error);
+    }
+    
+    .work-item-countdown {
+      margin-top: var(--space-3);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--color-border);
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
     }
     
     /* Completions List */
@@ -292,6 +437,20 @@
       margin-top: var(--space-1);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+    }
+    
+    .metric-countdown {
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      margin-top: var(--space-1);
+    }
+    
+    .metric-countdown.warning {
+      color: var(--color-warning);
+    }
+    
+    .metric-countdown.urgent {
+      color: var(--color-error);
     }
     
     /* Empty State */
@@ -406,7 +565,8 @@
     /* Responsive */
     @media (max-width: 768px) {
       .container { padding: var(--space-4); }
-      .header { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
+      .header { flex-direction: column; align-items: flex-start; gap: var(--space-3); }
+      .header-left { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
       .grid { grid-template-columns: 1fr; }
       .services-grid { grid-template-columns: 1fr; }
       .metrics-grid { grid-template-columns: 1fr; }
@@ -416,7 +576,10 @@
 <body>
   <div class="container">
     <header class="header">
-      <h1>🦊 FlowDesk</h1>
+      <div class="header-left">
+        <h1>🦊 FlowDesk</h1>
+        <div id="trust-state"></div>
+      </div>
       <div class="meta">
         <span id="generated-at">Loading...</span>
         <span class="generated-by" id="generated-by"></span>
@@ -462,10 +625,54 @@
       return `${days} day${days !== 1 ? 's' : ''}`;
     }
     
+    function formatDaysDecimal(days) {
+      if (days === null || days === undefined) return '—';
+      if (days < 1) {
+        const hours = Math.round(days * 24);
+        return `${hours}h`;
+      }
+      return `${days.toFixed(1)}d`;
+    }
+    
     function getThresholdClass(percent) {
       if (percent < 70) return 'green';
       if (percent < 90) return 'amber';
       return 'red';
+    }
+    
+    function getCountdownClass(daysUntil) {
+      if (daysUntil <= 1) return 'urgent';
+      if (daysUntil <= 3) return 'warning';
+      return '';
+    }
+    
+    function togglePendingQueue() {
+      const list = document.getElementById('pending-queue-list');
+      const toggle = document.getElementById('pending-queue-toggle');
+      if (list.classList.contains('expanded')) {
+        list.classList.remove('expanded');
+        toggle.innerHTML = '▶ Show details';
+      } else {
+        list.classList.add('expanded');
+        toggle.innerHTML = '▼ Hide details';
+      }
+    }
+    
+    function renderTrustState(ts) {
+      const container = document.getElementById('trust-state');
+      if (!ts) {
+        container.innerHTML = '';
+        return;
+      }
+      const levelClass = ts.level === 'at-risk' ? 'at-risk' : ts.level;
+      const levelText = ts.level === 'at-risk' ? 'At Risk' : ts.level.charAt(0).toUpperCase() + ts.level.slice(1);
+      container.innerHTML = `
+        <div class="trust-badge ${levelClass}">
+          <span>${ts.emoji}</span>
+          <span>${levelText}</span>
+        </div>
+        ${ts.triggers && ts.triggers.length > 0 ? `<div class="trust-triggers">${ts.triggers.join(' · ')}</div>` : ''}
+      `;
     }
     
     function renderDashboard(data) {
@@ -478,9 +685,15 @@
         generatedBy.textContent = ` · ${data.generatedBy}`;
       }
       
+      renderTrustState(data.trustState);
+      
       const sh = data.systemHealth || {};
       const wp = data.workPulse || {};
       const gp = data.governancePulse || {};
+      const sl = sh.sessionLock || {};
+      
+      const pendingTotal = (sh.pendingOperationsCount || 0) + (sh.pendingMessagesCount || 0);
+      const hasPendingQueue = pendingTotal > 0 && sh.pendingQueue && sh.pendingQueue.length > 0;
       
       dashboard.className = 'grid';
       dashboard.innerHTML = `
@@ -490,7 +703,23 @@
           <div class="row"><span class="row-label">State</span><span class="status-badge ${sh.currentState === 'active' ? 'active' : 'idle'}">${sh.currentState === 'active' ? 'Active' : 'Idle'}</span></div>
           ${sh.activeTask ? `<div class="row"><span class="row-label">Current Task</span><span class="row-value">${sh.activeTask}</span></div>` : ''}
           <div class="row"><span class="row-label">Last Heartbeat</span><span class="row-value">${sh.heartbeatStale ? '<span class="status-badge stale">Stale</span>' : ''}${formatRelativeTime(sh.lastHeartbeat)}</span></div>
-          <div class="row"><span class="row-label">Pending Ops</span><span class="row-value"><span class="status-dot ${sh.pendingOperationsCount > 0 ? 'degraded' : 'ok'}"></span>${sh.pendingOperationsCount || 0}</span></div>
+          <div class="row"><span class="row-label">Session Lock</span><span class="status-badge ${sl.status || 'writable'}">${sl.status === 'read-only' ? 'Read-Only' : sl.status === 'stale' ? 'Stale' : 'Writable'}${sl.staleMinutes ? ` (${sl.staleMinutes}m)` : ''}</span></div>
+          <div class="row">
+            <span class="row-label">Pending Ops/Msgs</span>
+            <span class="row-value"><span class="status-dot ${pendingTotal > 0 ? 'degraded' : 'ok'}"></span>${sh.pendingOperationsCount || 0} / ${sh.pendingMessagesCount || 0}</span>
+          </div>
+          ${hasPendingQueue ? `
+          <div class="pending-queue">
+            <button id="pending-queue-toggle" class="pending-queue-toggle" onclick="togglePendingQueue()">▶ Show details</button>
+            <div id="pending-queue-list" class="pending-queue-list">
+              ${sh.pendingQueue.map(item => `
+                <div class="pending-item">
+                  <div><span class="pending-item-type">${item.type}</span> ${item.action || item.target || ''}</div>
+                  <div><span class="pending-item-reason">${item.reason}</span> · <span class="pending-item-age">${item.ageMinutes}m</span></div>
+                </div>
+              `).join('')}
+            </div>
+          </div>` : ''}
           <div class="services-grid">${Object.entries(sh.services || {}).map(([name, status]) => `<div class="service-item"><span class="status-dot ${status}"></span><span class="service-name">${name}</span></div>`).join('')}</div>
           ${sh.server ? `
           <div class="server-health">
@@ -512,6 +741,11 @@
             <div class="work-item-header"><span class="work-item-name">${wp.activeItem.name}</span><span class="status-badge ${wp.activeItem.status === 'blocked' ? 'stale' : wp.activeItem.status === 'active' ? 'active' : 'idle'}">${wp.activeItem.status || 'idle'}</span></div>
             <div class="row"><span class="row-label">Last touched</span><span class="row-value">${formatDays(wp.activeItem.daysSinceTouch)} ago${wp.staleFlag ? ' ⚠️' : ''}</span></div>
             ${wp.activeItem.blocker ? `<div class="work-item-blocker">${wp.activeItem.blocker}</div>` : ''}
+            ${wp.activeItem.daysUntilStale !== null && wp.activeItem.daysUntilStale !== undefined ? `
+            <div class="work-item-countdown">
+              <span>⏱️</span>
+              <span class="countdown ${getCountdownClass(wp.activeItem.daysUntilStale)}">Stalls in ${formatDaysDecimal(wp.activeItem.daysUntilStale)}</span>
+            </div>` : ''}
           </div>` : `<div class="empty-state">No active work</div>`}
           <div class="section-header">Completed This Week</div>
           ${wp.completedThisWeek && wp.completedThisWeek.length > 0 ? `<ul class="completions-list">${wp.completedThisWeek.slice(0, 5).map(item => `<li><span class="completion-task">${item.task}</span><span class="completion-date">${formatDate(item.completedAt)}</span></li>`).join('')}</ul>` : `<div class="empty-state">No completions yet</div>`}
@@ -520,7 +754,11 @@
         <div class="panel">
           <div class="panel-header"><h2>Governance Pulse</h2><span class="icon">📋</span></div>
           <div class="metrics-grid">
-            <div class="metric-card"><div class="metric-value ${gp.debtCount > 0 ? (gp.oldestDebtDays > 14 ? 'warning' : '') : 'good'}">${gp.debtCount || 0}</div><div class="metric-label">Open Debt</div></div>
+            <div class="metric-card">
+              <div class="metric-value ${gp.debtCount > 0 ? (gp.oldestDebtDays > 14 ? 'warning' : '') : 'good'}">${gp.debtCount || 0}</div>
+              <div class="metric-label">Open Debt</div>
+              ${gp.oldestDebtDaysUntilAlert !== null && gp.oldestDebtDaysUntilAlert !== undefined && gp.debtCount > 0 ? `<div class="metric-countdown ${getCountdownClass(gp.oldestDebtDaysUntilAlert)}">Alert in ${gp.oldestDebtDaysUntilAlert}d</div>` : ''}
+            </div>
             <div class="metric-card"><div class="metric-value ${gp.oldestDebtDays > 14 ? 'warning' : ''}">${formatDays(gp.oldestDebtDays)}</div><div class="metric-label">Oldest Debt</div></div>
             <div class="metric-card"><div class="metric-value">${gp.alertsThisWeek || 0}</div><div class="metric-label">Alerts This Week</div></div>
             <div class="metric-card"><div class="metric-value ${gp.unpropagatedCorrections > 0 ? 'warning' : 'good'}">${gp.unpropagatedCorrections || 0}</div><div class="metric-label">Corrections</div></div>

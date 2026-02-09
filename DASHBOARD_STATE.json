@@ -1,14 +1,28 @@
 {
-  "generatedAt": "2026-02-09T08:19:00Z",
+  "generatedAt": "2026-02-09T15:45:00Z",
   "generatedBy": "manual",
+
+  "trustState": {
+    "level": "caution",
+    "emoji": "🟡",
+    "triggers": ["work:blocked"]
+  },
 
   "systemHealth": {
     "sessionActive": true,
     "currentState": "active",
-    "activeTask": "websitegrafix.com 3-page website",
-    "lastHeartbeat": "2026-02-09T08:25:00Z",
+    "activeTask": "FlowDesk v2 5-enhancement upgrade",
+    "lastHeartbeat": "2026-02-09T15:26:00Z",
     "heartbeatStale": false,
+    "sessionLock": {
+      "status": "writable",
+      "owner": "telegram",
+      "updatedAt": "2026-02-09T15:05:00Z",
+      "staleMinutes": null
+    },
     "pendingOperationsCount": 0,
+    "pendingMessagesCount": 0,
+    "pendingQueue": [],
     "services": {
       "anthropic": "ok",
       "github": "ok",
@@ -29,10 +43,12 @@
 
   "workPulse": {
     "activeItem": {
-      "name": "websitegrafix.com 3-page website",
-      "status": "blocked",
-      "blocker": "Awaiting screenshot from RC for design reference",
-      "daysSinceTouch": 0
+      "name": "FlowDesk v2 5-enhancement upgrade",
+      "status": "active",
+      "blocker": null,
+      "daysSinceTouch": 0,
+      "daysUntilStale": 3.0,
+      "staleAt": "2026-02-12T15:45:00Z"
     },
     "completedThisWeek": [
       {"task": "FlowDesk v2 dashboard MVP", "completedAt": "2026-02-09T08:20:00Z"},
@@ -47,6 +63,8 @@
   "governancePulse": {
     "debtCount": 1,
     "oldestDebtDays": 0,
+    "oldestDebtDaysUntilAlert": 14,
+    "oldestDebtAlertAt": "2026-02-23T00:00:00Z",
     "alertsThisWeek": 0,
     "latestScorecard": {
       "date": null,
