@@ -307,6 +307,61 @@
       font-style: italic;
     }
     
+    /* Server Health */
+    .server-health {
+      margin-top: var(--space-4);
+      padding-top: var(--space-4);
+      border-top: 1px solid #E8E8E0;
+    }
+    
+    .server-metrics {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    
+    .server-metric {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    
+    .metric-bar {
+      flex: 1;
+      height: 8px;
+      background: var(--color-surface);
+      border-radius: 4px;
+      overflow: hidden;
+      min-width: 80px;
+    }
+    
+    .metric-fill {
+      display: block;
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+    
+    .metric-fill.green { background: var(--color-success); }
+    .metric-fill.amber { background: var(--color-warning); }
+    .metric-fill.red { background: var(--color-error); }
+    
+    .metric-info {
+      display: flex;
+      justify-content: space-between;
+      min-width: 140px;
+      font-size: 0.8rem;
+    }
+    
+    .metric-name {
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    
+    .metric-detail {
+      color: #888;
+    }
+    
     /* Summary Row */
     .summary-row {
       margin-top: var(--space-4);
@@ -423,6 +478,12 @@
       return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
     
+    function getThresholdClass(percent) {
+      if (percent < 70) return 'green';
+      if (percent < 90) return 'amber';
+      return 'red';
+    }
+    
     function renderDashboard(data) {
       const dashboard = document.getElementById('dashboard');
       const generatedAt = document.getElementById('generated-at');
@@ -492,6 +553,45 @@
               </div>
             `).join('')}
           </div>
+          
+          ${sh.server ? `
+          <div class="server-health">
+            <h3 style="font-size: 0.875rem; color: #666; margin: var(--space-4) 0 var(--space-3);">Server Health</h3>
+            <div class="server-metrics">
+              <div class="server-metric">
+                <span class="metric-bar">
+                  <span class="metric-fill ${getThresholdClass(sh.server.diskUsedPercent)}" style="width: ${sh.server.diskUsedPercent}%"></span>
+                </span>
+                <span class="metric-info">
+                  <span class="metric-name">Disk</span>
+                  <span class="metric-detail">${sh.server.diskUsedGb}/${sh.server.diskTotalGb} GB (${sh.server.diskUsedPercent}%)</span>
+                </span>
+              </div>
+              <div class="server-metric">
+                <span class="metric-bar">
+                  <span class="metric-fill ${getThresholdClass(sh.server.ramUsedPercent)}" style="width: ${sh.server.ramUsedPercent}%"></span>
+                </span>
+                <span class="metric-info">
+                  <span class="metric-name">RAM</span>
+                  <span class="metric-detail">${Math.round(sh.server.ramUsedMb / 1024 * 10) / 10}/${Math.round(sh.server.ramTotalMb / 1024 * 10) / 10} GB (${sh.server.ramUsedPercent}%)</span>
+                </span>
+              </div>
+              <div class="server-metric">
+                <span class="metric-bar">
+                  <span class="metric-fill ${getThresholdClass(sh.server.cpuLoad * 100)}" style="width: ${Math.min(sh.server.cpuLoad * 100, 100)}%"></span>
+                </span>
+                <span class="metric-info">
+                  <span class="metric-name">CPU</span>
+                  <span class="metric-detail">Load: ${sh.server.cpuLoad}</span>
+                </span>
+              </div>
+            </div>
+            <div class="row" style="margin-top: var(--space-2);">
+              <span class="row-label">Uptime</span>
+              <span class="row-value">${sh.server.uptimeDays}d ${sh.server.uptimeHours}h</span>
+            </div>
+          </div>
+          ` : ''}
           
           ${Object.values(sh.services || {}).every(s => s === 'ok') ? `
           <div class="summary-row">

@@ -1,18 +1,29 @@
 {
-  "generatedAt": "2026-02-09T08:14:00Z",
+  "generatedAt": "2026-02-09T08:19:00Z",
   "generatedBy": "manual",
 
   "systemHealth": {
     "sessionActive": true,
     "currentState": "active",
     "activeTask": "websitegrafix.com 3-page website",
-    "lastHeartbeat": "2026-02-09T07:42:00Z",
+    "lastHeartbeat": "2026-02-09T08:25:00Z",
     "heartbeatStale": false,
     "pendingOperationsCount": 0,
     "services": {
       "anthropic": "ok",
       "github": "ok",
       "telegram": "ok"
+    },
+    "server": {
+      "diskUsedPercent": 10,
+      "diskUsedGb": 23,
+      "diskTotalGb": 232,
+      "ramUsedPercent": 28,
+      "ramUsedMb": 2184,
+      "ramTotalMb": 7872,
+      "cpuLoad": 0.01,
+      "uptimeDays": 9,
+      "uptimeHours": 18
     }
   },
 
@@ -24,11 +35,11 @@
       "daysSinceTouch": 0
     },
     "completedThisWeek": [
+      {"task": "FlowDesk v2 dashboard MVP", "completedAt": "2026-02-09T08:20:00Z"},
       {"task": "FlowDesk reframed as instrument panel", "completedAt": "2026-02-09T06:40:00Z"},
       {"task": "Verification Tier rule added", "completedAt": "2026-02-09T06:02:00Z"},
       {"task": "Pending operation schemas added", "completedAt": "2026-02-09T06:00:00Z"},
-      {"task": "Session presence indicator added", "completedAt": "2026-02-09T05:57:00Z"},
-      {"task": "SYSTEM_DOC.md v6.0 full consolidation", "completedAt": "2026-02-09T05:30:00Z"}
+      {"task": "Session presence indicator added", "completedAt": "2026-02-09T05:57:00Z"}
     ],
     "staleFlag": false
   },
