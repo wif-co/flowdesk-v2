@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-02-09T15:50:00Z",
+  "generatedAt": "2026-02-09T16:21:00Z",
   "generatedBy": "manual",
 
   "trustState": {
@@ -10,9 +10,9 @@
 
   "systemHealth": {
     "sessionActive": true,
-    "currentState": "active",
-    "activeTask": "FlowDesk v2 5-enhancement upgrade",
-    "lastHeartbeat": "2026-02-09T15:26:00Z",
+    "currentState": "idle",
+    "activeTask": null,
+    "lastHeartbeat": "2026-02-09T16:16:01Z",
     "heartbeatStale": false,
     "sessionLock": {
       "status": "writable",
@@ -42,22 +42,21 @@
   },
 
   "workPulse": {
-    "activeItem": {
-      "name": "FlowDesk v2 5-enhancement upgrade",
-      "status": "active",
-      "blocker": null,
-      "daysSinceTouch": 0,
-      "daysUntilStale": 3.0,
-      "staleAt": "2026-02-12T15:50:00Z"
-    },
+    "activeItem": null,
     "completedThisWeek": [
+      {"task": "FlowDesk v2 5-enhancement upgrade", "completedAt": "2026-02-09T15:46:00Z"},
       {"task": "FlowDesk v2 dashboard MVP", "completedAt": "2026-02-09T08:20:00Z"},
       {"task": "FlowDesk reframed as instrument panel", "completedAt": "2026-02-09T06:40:00Z"},
       {"task": "Verification Tier rule added", "completedAt": "2026-02-09T06:02:00Z"},
-      {"task": "Pending operation schemas added", "completedAt": "2026-02-09T06:00:00Z"},
-      {"task": "Session presence indicator added", "completedAt": "2026-02-09T05:57:00Z"}
+      {"task": "Pending operation schemas added", "completedAt": "2026-02-09T06:00:00Z"}
     ],
     "staleFlag": false
+  },
+
+  "pendingApprovals": {
+    "headline": null,
+    "items": [],
+    "count": 0
   },
 
   "governancePulse": {
@@ -70,6 +69,10 @@
       "date": null,
       "summary": null
     },
-    "unpropagatedCorrections": 0
+    "unpropagatedCorrections": 0,
+    "governanceAlignment": {
+      "aligned": true,
+      "mismatches": []
+    }
   }
 }
