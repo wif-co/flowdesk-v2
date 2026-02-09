@@ -37,7 +37,9 @@
     .trust-badge.caution { background: rgba(255, 217, 61, 0.15); color: var(--color-warning); border: 1px solid rgba(255, 217, 61, 0.3); }
     .trust-badge.at-risk { background: rgba(255, 107, 157, 0.15); color: var(--color-error); border: 1px solid rgba(255, 107, 157, 0.3); }
     .trust-triggers { font-size: 0.75rem; color: var(--color-text-muted); margin-top: var(--space-1); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: var(--space-6); }
+    .grid { display: grid; gap: var(--space-6); grid-template-columns: 1fr; }
+    @media (min-width: 768px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1400px) { .grid { grid-template-columns: repeat(4, 1fr); } }
     .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); padding: var(--space-6); }
     .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); padding-bottom: var(--space-3); border-bottom: 1px solid var(--color-border); }
     .panel-header h2 { font-size: 1.125rem; font-weight: 600; color: var(--color-text); }
@@ -130,7 +132,7 @@
     .governance-row.aligned { color: var(--color-success); }
     .governance-row.mismatch { color: var(--color-warning); }
     .mismatch-list { font-size: 0.75rem; color: var(--color-text-muted); margin-top: var(--space-1); }
-    @media (max-width: 768px) { .container { padding: var(--space-4); } .header { flex-direction: column; align-items: flex-start; gap: var(--space-3); } .header-left { flex-direction: column; align-items: flex-start; gap: var(--space-2); } .grid { grid-template-columns: 1fr; } .services-grid { grid-template-columns: 1fr; } .metrics-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 767px) { .container { padding: var(--space-4); } .header { flex-direction: column; align-items: flex-start; gap: var(--space-3); } .header-left { flex-direction: column; align-items: flex-start; gap: var(--space-2); } .services-grid { grid-template-columns: 1fr; } .metrics-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
