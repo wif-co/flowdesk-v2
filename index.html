@@ -120,6 +120,15 @@
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
     
+    .auth-icon {
+      font-size: 3.5rem;
+      margin-bottom: 12px;
+      animation: iconBounce 2s ease-in-out infinite;
+    }
+    @keyframes iconBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
     .auth-logo {
       font-family: var(--font-display);
       font-size: 2rem;
@@ -132,6 +141,44 @@
       color: var(--text-tertiary);
       font-size: 0.875rem;
       margin-bottom: 32px;
+    }
+    .remember-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      justify-content: center;
+    }
+    .remember-checkbox { display: none; }
+    .remember-check {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border-default);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      background: var(--bg-float);
+    }
+    .remember-check::after {
+      content: '✓';
+      font-size: 12px;
+      color: var(--accent-cyan);
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.2s ease;
+    }
+    .remember-checkbox:checked + .remember-check {
+      border-color: var(--accent-cyan);
+      background: rgba(0,212,170,0.1);
+    }
+    .remember-checkbox:checked + .remember-check::after {
+      opacity: 1;
+      transform: scale(1);
     }
     .auth-input {
       width: 100%;
@@ -282,13 +329,13 @@
     
     /* Panels */
     .panel {
-      background: var(--bg-elevated);
+      background: linear-gradient(145deg, var(--bg-elevated) 0%, var(--bg-float) 100%);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
       padding: 24px;
       position: relative;
       overflow: hidden;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       animation: panelReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
     }
     .panel:nth-child(1) { animation-delay: 0.1s; }
@@ -296,25 +343,49 @@
     .panel:nth-child(3) { animation-delay: 0.3s; }
     .panel:nth-child(4) { animation-delay: 0.4s; }
     @keyframes panelReveal {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .panel:hover {
       border-color: var(--border-default);
-      box-shadow: 0 8px 32px -8px rgba(0,0,0,0.3);
+      box-shadow: 
+        0 12px 40px -12px rgba(0,0,0,0.4),
+        0 0 0 1px var(--border-default),
+        inset 0 1px 0 rgba(255,255,255,0.03);
+      transform: translateY(-2px);
     }
+    /* Top gradient line */
     .panel::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, var(--accent-cyan) 30%, var(--accent-violet) 70%, transparent 100%);
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.4s ease;
     }
-    .panel:hover::before { opacity: 0.5; }
+    .panel:hover::before { opacity: 1; }
+    /* Corner accent */
+    .panel::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle at top right, var(--glow-cyan), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    .panel:hover::after { opacity: 0.3; }
+    /* Panel-specific accents */
+    .panel:nth-child(1)::after { background: radial-gradient(circle at top right, var(--glow-cyan), transparent 70%); }
+    .panel:nth-child(2)::after { background: radial-gradient(circle at top right, var(--glow-violet), transparent 70%); }
+    .panel:nth-child(3)::after { background: radial-gradient(circle at top right, rgba(245,158,11,0.3), transparent 70%); }
+    .panel:nth-child(4)::after { background: radial-gradient(circle at top right, rgba(59,130,246,0.3), transparent 70%); }
     
     .panel-header {
       display: flex;
@@ -563,9 +634,15 @@
   <!-- Auth Overlay -->
   <div class="auth-overlay" id="auth-overlay">
     <div class="auth-card">
+      <div class="auth-icon">🦊</div>
       <div class="auth-logo">FlowDesk</div>
       <p class="auth-subtitle">Enter password to continue</p>
       <input type="password" class="auth-input" id="auth-password" placeholder="Password" autocomplete="off">
+      <label class="remember-label">
+        <input type="checkbox" id="auth-remember" class="remember-checkbox">
+        <span class="remember-check"></span>
+        <span>Remember me</span>
+      </label>
       <button class="auth-btn" onclick="checkPassword()">Continue</button>
       <div class="auth-error" id="auth-error">Incorrect password</div>
     </div>
@@ -742,8 +819,15 @@
     var PASS = '(DashBoard)';
     function checkPassword() {
       var input = document.getElementById('auth-password').value;
+      var remember = document.getElementById('auth-remember').checked;
       if (input === PASS) {
-        try { sessionStorage.setItem('flowdesk-auth', 'true'); } catch(e) {}
+        try {
+          if (remember) {
+            localStorage.setItem('flowdesk-auth', 'true');
+          } else {
+            sessionStorage.setItem('flowdesk-auth', 'true');
+          }
+        } catch(e) {}
         document.getElementById('auth-overlay').classList.add('hidden');
         document.getElementById('app-content').classList.add('visible');
       } else {
@@ -753,7 +837,7 @@
     document.getElementById('auth-password').addEventListener('keypress', function(e) { if (e.key === 'Enter') checkPassword(); });
     (function() {
       try {
-        if (sessionStorage.getItem('flowdesk-auth') === 'true') {
+        if (localStorage.getItem('flowdesk-auth') === 'true' || sessionStorage.getItem('flowdesk-auth') === 'true') {
           document.getElementById('auth-overlay').classList.add('hidden');
           document.getElementById('app-content').classList.add('visible');
         }
