@@ -180,16 +180,19 @@
       opacity: 1;
       transform: scale(1);
     }
+    .input-wrapper {
+      position: relative;
+      margin-bottom: 16px;
+    }
     .auth-input {
       width: 100%;
-      padding: 14px 18px;
+      padding: 14px 48px 14px 18px;
       border: 1px solid var(--border-default);
       border-radius: var(--radius-md);
       background: var(--bg-float);
       color: var(--text-primary);
       font-family: var(--font-body);
       font-size: 1rem;
-      margin-bottom: 16px;
       transition: all 0.2s ease;
     }
     .auth-input:focus {
@@ -198,6 +201,20 @@
       box-shadow: 0 0 0 3px var(--glow-cyan);
     }
     .auth-input::placeholder { color: var(--text-tertiary); }
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      opacity: 0.5;
+      transition: opacity 0.2s ease;
+      padding: 4px;
+    }
+    .password-toggle:hover { opacity: 1; }
     .auth-btn {
       width: 100%;
       padding: 14px 24px;
@@ -637,7 +654,10 @@
       <div class="auth-icon">🦊</div>
       <div class="auth-logo">FlowDesk</div>
       <p class="auth-subtitle">Enter password to continue</p>
-      <input type="password" class="auth-input" id="auth-password" placeholder="Password" autocomplete="off">
+      <div class="input-wrapper">
+        <input type="password" class="auth-input" id="auth-password" placeholder="Password" autocomplete="off">
+        <button type="button" class="password-toggle" id="password-toggle" onclick="togglePasswordVisibility()">👁️</button>
+      </div>
       <label class="remember-label">
         <input type="checkbox" id="auth-remember" class="remember-checkbox">
         <span class="remember-check"></span>
@@ -817,6 +837,17 @@
   <script>
     // Password Gate
     var PASS = '(DashBoard)';
+    function togglePasswordVisibility() {
+      var input = document.getElementById('auth-password');
+      var toggle = document.getElementById('password-toggle');
+      if (input.type === 'password') {
+        input.type = 'text';
+        toggle.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        toggle.textContent = '👁️';
+      }
+    }
     function checkPassword() {
       var input = document.getElementById('auth-password').value;
       var remember = document.getElementById('auth-remember').checked;
