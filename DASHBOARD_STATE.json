@@ -1,0 +1,46 @@
+{
+  "generatedAt": "2026-02-09T08:14:00Z",
+  "generatedBy": "manual",
+
+  "systemHealth": {
+    "sessionActive": true,
+    "currentState": "active",
+    "activeTask": "websitegrafix.com 3-page website",
+    "lastHeartbeat": "2026-02-09T07:42:00Z",
+    "heartbeatStale": false,
+    "pendingOperationsCount": 0,
+    "services": {
+      "anthropic": "ok",
+      "github": "ok",
+      "telegram": "ok"
+    }
+  },
+
+  "workPulse": {
+    "activeItem": {
+      "name": "websitegrafix.com 3-page website",
+      "status": "blocked",
+      "blocker": "Awaiting screenshot from RC for design reference",
+      "daysSinceTouch": 0
+    },
+    "completedThisWeek": [
+      {"task": "FlowDesk reframed as instrument panel", "completedAt": "2026-02-09T06:40:00Z"},
+      {"task": "Verification Tier rule added", "completedAt": "2026-02-09T06:02:00Z"},
+      {"task": "Pending operation schemas added", "completedAt": "2026-02-09T06:00:00Z"},
+      {"task": "Session presence indicator added", "completedAt": "2026-02-09T05:57:00Z"},
+      {"task": "SYSTEM_DOC.md v6.0 full consolidation", "completedAt": "2026-02-09T05:30:00Z"}
+    ],
+    "staleFlag": false
+  },
+
+  "governancePulse": {
+    "debtCount": 1,
+    "oldestDebtDays": 0,
+    "alertsThisWeek": 0,
+    "latestScorecard": {
+      "date": null,
+      "summary": null
+    },
+    "unpropagatedCorrections": 0
+  }
+}
